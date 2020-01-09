@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block header %}
+  <h1>Scrape Result List <h1>
+{% endblock header %}
+{% block content %}
+    <table class="table">
+    <thead class="thead-dark">
+    <tr><th>Time</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+    {% for result in scraperesult_list %}
+    {#% for target in targets %#}
+        <tr>
+        <td>{{ result.time }}</td>
+        <td>{{ result.value }}</td>
+        </tr>
+    {% empty %}
+        <tr>ターゲットはありません</tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    <td><a href="{% url 'registration:targets' %}">Target List Page</a></td>
+{% endblock content %}

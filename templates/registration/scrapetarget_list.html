@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block header %}
+  <h1>Scrape Target List for "{{ user.username }}"   User ID:{{ user.pk }}<h1>
+{% endblock header %}
+{% block content %}
+    <table class="table text-nowrap">
+    <thead class="thead-dark">
+    <tr><th>Name</th><th>URL</th><th>xPath</th><th>Interval</th><th>Triger time</th><th>Result Page</th></tr>
+    </thead>
+    <tbody>
+    {% for target in scrapetarget_list %}
+    {#% for target in targets %#}
+        <tr>
+        <td><a href="{% url 'registration:update' target.pk %}">{{ target.name }}</a></td>
+        {# <td>{{ target.name }}</td> #}
+        <td>{{ target.url|urlize }}</td>
+        <td>{{ target.xpath }} </td>
+        <td>{{ target.interval }}</td>
+        <td>{{ target.trigger_number }}</td>
+        <td><a href="{% url 'registration:results' target.pk %}">result</a></td>
+        </tr>
+    {% empty %}
+        <tr>ターゲットはありません</tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    <a href="{% url 'registration:create' %}">create new target</a>
+{% endblock content %}

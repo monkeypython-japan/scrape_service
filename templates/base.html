@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+{% load static %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+    <body>
+        <div class="container">
+       <header>
+
+          <div class='header'>
+
+          {% block header %}
+
+          {% endblock header %}
+
+          </div>
+
+        </header>
+
+        <div class='main'>
+
+          {% block content %}
+
+          {% endblock content %}
+
+        </div>
+        </div>
+    </body>
+</html>
