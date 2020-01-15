@@ -6,6 +6,7 @@ from django.contrib.auth import login, authenticate
 from django.views import View
 from django.views.generic import  CreateView
 from . forms import UserCreateForm, LoginForm
+from django.urls import reverse_lazy
 
 class CreateAccountView(CreateView):
     ''' Create new account'''
@@ -19,7 +20,7 @@ class CreateAccountView(CreateView):
             password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=password)
             login(request, user)
-            return redirect('/')
+            return redirect(reverse_lazy('registration:targets'))
         return render(request, 'create.html', {'form': form,})
 
     def get(self, request, *args, **kwargs):
@@ -37,7 +38,7 @@ class LoginView(View):
             username = form.cleaned_data.get('username')
             user = User.objects.get(username=username)
             login(request, user)
-            return redirect('/')
+            return redirect(reverse_lazy('registration:targets'))
         return render(request, 'login.html', {'form': form,})
 
     def get(self, request, *args, **kwargs):
