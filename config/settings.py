@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # my applications
     'registration.apps.RegistrationConfig',
     'scrape.apps.ScrapeConfig',
+    'accounts.apps.AccountsConfig',
 ]
 
 MIDDLEWARE = [

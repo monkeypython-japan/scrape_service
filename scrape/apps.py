@@ -20,8 +20,7 @@ class ScrapeConfig(AppConfig):
         controller = TaskController()
         INTERVAL_IN_SECOND = 60
         timer = RepeatTimer(controller.do_the_job, INTERVAL_IN_SECOND)
-        #timer = RepeatTimer(self.resume_scraper, 60)
-        timer.start_timer()
+        timer.start_timer()   # comment out when use manage.py
         print('Exit Scrape.ready()') # DEBUG
 
 class RepeatTimer():
@@ -102,6 +101,9 @@ class TaskController():
         Execute all task in task tree
             args:
                 task_tree: (Tree that contains all tasks to be execute in this interval)
+            returns:
+                Dictionary: {url:{xpath:value ...}, url2:{xpath:value...},...}
+                value of the dictionary can be single error string
         '''
         url_nodes = task_tree.get_all_node_in_tear(1)  #Tear 1 contains ural nodes and subtree
         for url_node in url_nodes:
@@ -123,6 +125,7 @@ class TaskController():
         task_tree = self.build_task_tree()
         results = self.execute_task_tree(task_tree)
         for url, dict in results.items():
+            # print(f'{url=} , {dict=}') #DEBUG
             #find url node in task tree
             url_dict = task_tree.root.children_as_dictionary() # tear 1 is url tear
             url_node = url_dict[url]
@@ -137,6 +140,9 @@ class TaskController():
                     result = ScrapeResult(target=target, time = timezone.now(), value = value)
                     print(f'{result=}') #DEBUG
                     result.save()
+
+
+
 
 
 class Scraper():
@@ -162,24 +168,27 @@ class Scraper():
              xpaths: str list of xpath of target in page
          return:
              list of result
+             or
+             str of Error Message
          '''
         import requests
         import lxml.html
         HEADERS = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36'}
         TIMEOUT = 10
-
+        results = {}
         try:
             response = requests.get(url, headers = HEADERS, timeout = TIMEOUT)
         except Exception as ex:
             error_message = str(ex)
-            return error_message
-
-        #print(response.content) #DEBUG
-        results = {}
-        for xpath in xpaths:
+            for xpath in xpaths:
+                results[xpath] = '__ERROR__'
+        else:
+            #print(response.content) #DEBUG
             html = lxml.html.fromstring(response.content)
-            tags = html.xpath(xpath)
-            results[xpath] = tags[0].text if len(tags) > 0 else '__NOVALUE__'
+            for xpath in xpaths:
+                tags = html.xpath(xpath)
+                results[xpath] = tags[0].text if len(tags) > 0 else '__NOVALUE__'
+
         return results
 
     @classmethod
@@ -208,13 +217,16 @@ class Scraper():
 
 class Scheduler():
     '''
-    Instance executes functions in multithread
+    Instance executes functions with ThreadPoolExecutor
     '''
     def __init__(self,max_worker=1):
         '''
 
         Args:
             max_worker: int  maximum worker number
+
+        Returns:
+            get_results() returns all results of execution. this function blocks until finishing of all task
         '''
         self.max_worker = max_worker
         self.pool = ThreadPoolExecutor(self.max_worker)
@@ -239,7 +251,7 @@ class Scheduler():
         '''
         Get results of tasks
         Returns:
-            List of results of submited task.  Return after all task is completed.
+            Dictionary of results of submited task.  Returns after all task is completed.
         '''
         import concurrent.futures
         results = {}
