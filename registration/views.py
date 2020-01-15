@@ -40,10 +40,12 @@ class ScrapeTargetCreateView(LoginRequiredMixin, CreateView):
     success_url = "/registration/"
 
     def get_initial(self):
-        from django.contrib.auth import get_user_model
-        owner = get_user_model()
-        print(f'get_initial() {self.request.user.id=}')
-        return {'owner': owner, 'owner_id':self.request.user.id}
+        from django.contrib.auth import get_user
+        owner = get_user(self.request)
+        # print(f'get_initial() {self.request.user.id=}')
+        print(f'get_initial() {owner.id=}') # DEBUG
+        # return {'owner': owner, 'owner_id':self.request.user.id}
+        return {'owner': owner}
 
 class ScrapeTargetUpdateView(UpdateView):
     model = ScrapeTarget
