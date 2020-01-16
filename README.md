@@ -53,4 +53,4 @@ Scraping を実際に実行するアプリケーションで、ユーザとの�
 ## 開発環境
 * Python  3.8.0
 * django 3.0
-* PyChar 2019.3.1 (CE)
+* PyCharm 2019.3.1 (CE)
