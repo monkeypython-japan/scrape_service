@@ -1,18 +1,19 @@
-<!DOCTYPE html>
-<html lang="ja">
-  <body>
-    {% if form.errors  %}
-    <p>ユーザーID, パスワードが一致しません．</p>
-    {% endif %}
-    <form method="POST" action="{% url 'accounts:login' %}">
-      {% csrf_token %}
-      <label>ユーザーID</label>
-      {{ form.username }}
-      {{ form.username.errors }}
-      <label>パスワード</label>
-      {{ form.password }}
-      {{ form.password.errors }}
-      <button type = "submit">ログイン</button>
-    </form>
-  </body>
-</html>
+{% extends 'base.html' %}
+{% block header %}
+  <h1>Scrape Service Login <h1>
+{% endblock header %}
+{% block content %}
+{% if form.errors  %}
+ <p>ユーザーID, パスワードが一致しません．</p>
+{% endif %}
+<form method="POST" action="{% url 'accounts:login' %}">
+  {% csrf_token %}
+  <label>ユーザーID</label>
+  {{ form.username }}
+  {{ form.username.errors }}
+  <label>パスワード</label>
+  {{ form.password }}
+  {{ form.password.errors }}
+  <button type = "submit">ログイン</button>
+</form>
+{% endblock content %}

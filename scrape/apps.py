@@ -181,7 +181,7 @@ class Scraper():
         except Exception as ex:
             error_message = str(ex)
             for xpath in xpaths:
-                results[xpath] = '__ERROR__'
+                results[xpath] = '__SITE_ERROR__'
         else:
             #print(response.content) #DEBUG
             html = lxml.html.fromstring(response.content)
