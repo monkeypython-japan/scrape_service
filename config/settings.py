@@ -108,6 +108,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# page that move after login
+from django.urls import reverse_lazy
+LOGIN_REDIRECT_URL =  reverse_lazy('registration:targets')
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/

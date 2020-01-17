@@ -18,7 +18,7 @@ class ScrapeConfig(AppConfig):
     def ready(self):
         print('This is Scrape.ready()') # DEBUG
         controller = TaskController()
-        INTERVAL_IN_SECOND = 60
+        INTERVAL_IN_SECOND = 600 # 10 minutes
         timer = RepeatTimer(controller.do_the_job, INTERVAL_IN_SECOND)
         timer.start_timer()   # comment out when use manage.py
         print('Exit Scrape.ready()') # DEBUG
