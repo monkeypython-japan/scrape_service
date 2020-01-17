@@ -6,13 +6,16 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')  # 自分のs
 #from registration.models import ScrapeTarget, ScrapeResult
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 import threading
-import datetime
+from datetime import datetime
+
+def sign(x):
+    return (x > 0) - (x < 0)
 
 class ScrapeConfig(AppConfig):
     name = 'scrape'
 
     def resume_scraper(self):
-        print(f'Im resume_scraper() {datetime.datetime.now()}')
+        print(f'Im resume_scraper() {datetime.now()}')
         #test_concurrent()
 
     def ready(self):
@@ -22,6 +25,48 @@ class ScrapeConfig(AppConfig):
         timer = RepeatTimer(controller.do_the_job, INTERVAL_IN_SECOND)
         timer.start_timer()   # comment out when use manage.py
         print('Exit Scrape.ready()') # DEBUG
+
+class TimeSlot():
+    def __init__(self, type, number):
+        # Check parameters
+        if type == 'H' and number in range(6):
+            pass
+        elif type == 'D' and number in range(24):
+            pass
+        elif type == 'W' and number in range(7):
+            pass
+        else:
+            raise ValueError
+        # Parameters were OK. set to attributes
+        self.type = type
+        self.number = number
+
+    def __str__(self):
+        return self.type + str(self.number)
+
+    def compare(self, other):
+        return sign(self.number - other.number)
+
+
+from django.utils import timezone
+class TimeByTimeSlots():
+   def __init__(self, dt=timezone.now()):
+#   def __init__(self, dt=datetime.now()):  #DEBUG
+       w = dt.weekday()
+       h = dt.hour
+       m = dt.minute // 10  # unitize by 10
+       self.week_slot = TimeSlot('W', w)
+       self.day_slot =  TimeSlot('D', h)
+       self.hour_slot = TimeSlot('H', m)
+       self.slot_list = [self.week_slot, self.day_slot, self.hour_slot]
+       self.total_minutes = m + (h * 60) + (w * 24 * 60)
+
+   def __str__(self):
+       return str([str(s) for s in self.slot_list])
+
+   def compare(self, other):
+       return sign(self.total_minutes - other.total_minutes)
+
 
 class RepeatTimer():
     ''' Execute a callable object with inetrval '''
@@ -75,9 +120,9 @@ class TaskController():
         # django.setup() # DEBUG for test from command line
         from registration.models import ScrapeTarget, ScrapeResult
         task_tree = Tree()
-        all_target = ScrapeTarget.objects.all()  #TODO select only target match this interval
+        targets = ScrapeTarget.objects.all()  #TODO select only target match this interval
         #print(f'{all_target=}') #DEBUG
-        for target in all_target:
+        for target in targets:
             single_task_tree = Scraper.make_single_task(target.url, target.xpath, target.pk)
             single_task_tree.describe() #DEBUG
             task_tree.graft_at_root(single_task_tree)
@@ -139,7 +184,9 @@ class TaskController():
                     target = ScrapeTarget.objects.get(pk=target_pk)
                     result = ScrapeResult(target=target, time = timezone.now(), value = value)
                     print(f'{result=}') #DEBUG
+                    target.last_execution_time = timezone.now()
                     result.save()
+                    target.save()
 
 
 
@@ -598,26 +645,35 @@ class Tree():
     def __str__(self):
         return f'Tree root:{self.root.name} depth:{self.get_depth()} '
 
-class TimeSlot():
-    '''
-    TOBE implimented.  Explain time slot for task execution
-    '''
-    def __init__(self, datetime):
-        self.time = datetime
-        self.hour_slot = self.time.hour
-        self.minutes_slot = self.time.minute // 10
-
-    @classmethod
-    def renge_for_current_minutes_slot(cls):
-        pass
-
-    @classmethod
-    def renge_for_current_hour_slot(cls):
-        pass
 
 # ======
 #  Test methods
 # ======
+
+def test_interval():
+    import time
+    from datetime import timedelta
+    print('test_interval()')
+    current_time = datetime.now()
+    delta = timedelta(days=1, hours=1)
+    future_time = current_time + delta
+    past_time = current_time - delta
+
+    current = TimeByTimeSlots(current_time)
+    print(f'{current}')
+    print(f'{current.total_minutes=}')
+    print(f'{current.compare(current)=}')
+
+    future = TimeByTimeSlots(future_time)
+    print(f'{future}')
+    print(f'{future.total_minutes=}')
+    print(f'{current.compare(future)=}')
+
+    past = TimeByTimeSlots(past_time)
+    print(f'{past}')
+    print(f'{past.total_minutes=}')
+    print(f'{current.compare(past)=}')
+
 
 def test_task_controller():
     print('test_task_controller()')
@@ -635,19 +691,6 @@ def test_task_controller():
     single_task_tree.describe()
     result = controller.execute_task_tree(single_task_tree)
     print(f'{result=}')
-
-
-def test_interval():
-    print('test_interval()')
-    now = datetime.datetime.now()
-    ts = TimeSlot(datetime.datetime.now())
-    print(f'{ts.time=}')
-    print(f'{ts.hour_slot=},{ts.minutes_slot=}')
-
-    hour = 23
-    minute = 59
-
-    print(f'{hour=},{minute=}')
 
 def test_concurrent():
     print('test_concurrent()')
@@ -776,7 +819,9 @@ def test_node():
     # quit()
 
 def main():
-    print("Test scrape/apps.py")
+    #
+    test_interval()
+    #print("Test scrape/apps.py")
     #test_task_controller()
     #test_interval()
     #test_concurrent()

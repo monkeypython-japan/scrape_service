@@ -14,12 +14,14 @@ class ScrapeTarget(models.Model):
     url =  models.URLField(verbose_name = 'URL')
     xpath = models.CharField(verbose_name = 'xpath',max_length=225)
     INTERVAL_OPTION = (
-        ('h','HOUR'),
-        ('d','DAY')
+        ('H','HOUR'),
+        ('D','DAY'),
+        ('W','WEEK')
     )
     interval = models.CharField(verbose_name = 'インターバル',max_length=1, choices=INTERVAL_OPTION, blank=True, default='d')
     trigger_number = models.IntegerField(verbose_name = '開始時点',blank=True, default=0)
     description = models.TextField(verbose_name='概要', null=True, blank=True)
+    last_execution_time = models.DateTimeField(verbose_name = '直近実行時間',blank=True, null=True)
 
     # Desctiption
     def __str__(self):
@@ -33,7 +35,7 @@ class ScrapeResult(models.Model):
     #Fields
     target = models.ForeignKey(ScrapeTarget, verbose_name = 'ScrapeTarget',on_delete = models.CASCADE)
     value = models.CharField(verbose_name = '採取値', max_length = 255)
-    time = models.DateTimeField(verbose_name = '最終採取時間')
+    time = models.DateTimeField(verbose_name = '採取時間')
 
    # Desctiption
     def __str__(self):
