@@ -3,10 +3,12 @@ from django.apps import AppConfig
 import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')  # 自分のsettings.py
 
-#from registration.models import ScrapeTarget, ScrapeResult
+# django.setup() # DEBUG for test from command line
+# from registration.models import ScrapeTarget, ScrapeResult
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 import threading
 from datetime import datetime
+
 
 def sign(x):
     return (x > 0) - (x < 0)
@@ -107,20 +109,33 @@ class TaskController():
 
     def fetch_all_task(self):
         ''' fetch all URL, Xpath, target_pk from ScrapeTaregt'''
-        pass
+        # django.setup() # DEBUG for test from command line
+        from registration.models import ScrapeTarget, ScrapeResult
+        targets = ScrapeTarget.objects.all()
+        return targets
 
-    def write_result(self,result_pk, value):
-        ''' write value as result to ScrapeResult '''
-        pass
+    def fetch_tasks_for_current_interval(self):
+        ''' fetch targets to be executed in current interval'''
+        # django.setup() # DEBUG for test from command line
+        from registration.models import ScrapeTarget, ScrapeResult
+        current = TimeByTimeSlots()
+        time_slots = current.slot_list
+        results = []
+        for slot in time_slots:
+            type = slot.type
+            number = slot.number
+            hits = ScrapeTarget.objects.filter(interval = type, trigger_number = number)
+            print(f'{type}{number} : {hits}')
+            results.extend(hits)
+        return results
 
     def build_task_tree(self):
         '''
         Build whole task tree with model ScrapeTarget
         '''
-        # django.setup() # DEBUG for test from command line
-        from registration.models import ScrapeTarget, ScrapeResult
         task_tree = Tree()
-        targets = ScrapeTarget.objects.all()  #TODO select only target match this interval
+        # targets = self.fetch_all_task()  # TODO select only target match this interval
+        targets = self.fetch_tasks_for_current_interval()
         #print(f'{all_target=}') #DEBUG
         for target in targets:
             single_task_tree = Scraper.make_single_task(target.url, target.xpath, target.pk)
@@ -461,7 +476,8 @@ class Node():
         '''
         Remove self from parent
         '''
-        self.parent.remove_child(self)
+        if self.parent is not None:   # if parent is None, this node is removed or root
+            self.parent.remove_child(self)
 
     def names_of_children(self):
         '''
@@ -603,13 +619,13 @@ class Tree():
     def reduce(self):
         '''
         Merge nodes that has same name and same parent into single node
-        This operation minimize url access and scrapeing
+        This operation minimize url access and scraping
         Modify self.
         '''
-        depath = self.get_depth()
-        if depath < 2:
+        depth = self.get_depth()
+        if depth < 2:
             return
-        for tear in range(1, depath): #Do every tear below 1
+        for tear in range(1, depth): #Do every tear below 1
             #print(f'{tear=}') #DEBUG
             nodes = self.get_all_node_in_tear(tear)
             for node in nodes: # Do every node in this tear
