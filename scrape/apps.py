@@ -127,6 +127,12 @@ class TaskController():
             hits = ScrapeTarget.objects.filter(interval = type, trigger_number = number)
             print(f'{type}{number} : {hits}')
             results.extend(hits)
+        # Check if this task was done within this interval
+        for target in results:
+            last_execution_time = target.last_execution_time
+            if last_execution_time is not None and current.compare(TimeByTimeSlots(last_execution_time)) == 1:
+                # if last execution_time is pasted, task already executed in this interval
+                results.remove(target) #remove the target
         return results
 
     def build_task_tree(self):
