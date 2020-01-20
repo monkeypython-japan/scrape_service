@@ -34,6 +34,11 @@ class ScrapeResultListView(ListView):
         print("target_id:", target_id)
         return ScrapeResult.objects.filter(target=target_id)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["target_id"] = self.kwargs.get('target_id',100)
+        return context
+
 class ScrapeTargetCreateView(LoginRequiredMixin, CreateView):
     model = ScrapeTarget
     form_class = ScrapeTargetForm
