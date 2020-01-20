@@ -18,7 +18,7 @@ class ScrapeTarget(models.Model):
         ('D','DAY'),
         ('W','WEEK')
     )
-    interval = models.CharField(verbose_name = 'インターバル',max_length=1, choices=INTERVAL_OPTION, blank=True, default='d')
+    interval = models.CharField(verbose_name = 'インターバル',max_length=1, choices=INTERVAL_OPTION, blank=True, default='D')
     trigger_number = models.IntegerField(verbose_name = '開始時点',blank=True, default=0)
     description = models.TextField(verbose_name='概要', null=True, blank=True)
     last_execution_time = models.DateTimeField(verbose_name = '直近実行時間',blank=True, null=True)

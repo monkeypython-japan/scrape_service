@@ -54,20 +54,28 @@ from django.utils import timezone
 class TimeByTimeSlots():
    def __init__(self, dt=timezone.now()):
 #   def __init__(self, dt=datetime.now()):  #DEBUG
-       w = dt.weekday()
-       h = dt.hour
-       m = dt.minute // 10  # unitize by 10
-       self.week_slot = TimeSlot('W', w)
-       self.day_slot =  TimeSlot('D', h)
-       self.hour_slot = TimeSlot('H', m)
-       self.slot_list = [self.week_slot, self.day_slot, self.hour_slot]
-       self.total_minutes = m + (h * 60) + (w * 24 * 60)
+        w = dt.weekday()
+        h = dt.hour
+        m = dt.minute // 10  # unitize by system base interval. current value is 10
+        self.week_slot = TimeSlot('W', w)
+        self.day_slot =  TimeSlot('D', h)
+        self.hour_slot = TimeSlot('H', m)
+        self.slot_list = [self.week_slot, self.day_slot, self.hour_slot]
+        self.slot_dict = {'W':self.week_slot, 'D':self.day_slot, 'H':self.hour_slot}
+        self.minutes_hour_slot = dt.minute
+        self.minutes_day_slot = self.minutes_hour_slot + (h * 60)
+        self.minutes_week_slot = self.minutes_day_slot + (w * 24 * 60)
+        self.minutes_dict = {'W': self.minutes_week_slot, 'D': self.minutes_day_slot, 'H': self.minutes_hour_slot}
+        self.total_minutes = self.minutes_week_slot
 
    def __str__(self):
        return str([str(s) for s in self.slot_list])
 
    def compare(self, other):
        return sign(self.total_minutes - other.total_minutes)
+
+   def compare_within_slot(self,slot_letter,other):
+        return sign(self.minutes_dict[slot_letter] - other.minutes_dict[slot_letter])
 
 
 class RepeatTimer():
@@ -100,11 +108,11 @@ class TaskController():
     '''
 
     def __init__(self):
-        MAX_WORKER = 2 # Max thred number for page access and scraping
+        MAX_WORKER = 2 # Max thread number for page access and scraping
         self.scheduler = Scheduler(MAX_WORKER)
 
     def fetch_single_task(self):
-        ''' fetch URL, Xpath, target_pk from ScrapeTaregt'''
+        ''' fetch URL, Xpath, target_pk from ScrapeTaregt '''
         pass
 
     def fetch_all_task(self):
@@ -125,14 +133,14 @@ class TaskController():
             type = slot.type
             number = slot.number
             hits = ScrapeTarget.objects.filter(interval = type, trigger_number = number)
-            print(f'{type}{number} : {hits}')
+            print(f'{type}{number} : {hits}') # DEBUG
             results.extend(hits)
         # Check if this task was done within this interval
         for target in results:
             last_execution_time = target.last_execution_time
-            if last_execution_time is not None and current.compare(TimeByTimeSlots(last_execution_time)) == 1:
-                # if last execution_time is pasted, task already executed in this interval
-                results.remove(target) #remove the target
+            if last_execution_time is not None and current.compare_within_slot(target.interval, TimeByTimeSlots(last_execution_time)) == 1:
+                # if last execution_time is pasted within specified interval time slot, task already executed in this interval
+                results.remove(target) #remove the target to pass execution
         return results
 
     def build_task_tree(self):
@@ -569,7 +577,7 @@ class Tree():
         elif tear == 0:
             return [self.root]
         elif tear == 1:
-            return self.root.children
+            return self.root.children if self.root.children is not None else []  # children can be None
         else:
             merged = []
             for node in self.get_all_node_in_tear(tear -1):
