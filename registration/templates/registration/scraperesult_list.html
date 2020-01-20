@@ -18,6 +18,10 @@
     {% endfor %}
     </tbody>
     </table>
+    <p>
     <td><a href="{% url 'registration:targets' %}">Target List Page</a></td>
+    </p>
+    <p>
     <td><a href="{% url 'download:download' target_id %}">Download as CSV</a></td>
+    </p>
 {% endblock content %}
