@@ -18,13 +18,7 @@
     {% endfor %}
     </tbody>
     </table>
-    <p>
-    <td><a href="{% url 'registration:targets' %}">Target List Page</a></td>
-    </p>
-    <p>
-    <td><a href="{% url 'download:download' target_id %}">Download as CSV</a></td>
-    </p>
-     <p>
-    <td><a href="{% url 'registration:del_results' target_id %}">Delete Results</a></td>
-    </p>
+
+    <td><a class="btn btn-primary" href="{% url 'download:download' target_id %}" role="button">Download as CSV</a></td>
+    <td><a class="btn btn-danger" href="{% url 'registration:del_results' target_id %}" role="button">Delete Results</a></td>
 {% endblock content %}

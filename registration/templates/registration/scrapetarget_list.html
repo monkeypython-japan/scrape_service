@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
+
 {% block header %}
-  <h1>Scrape Target List for "{{ user.username }}"   User ID:{{ user.pk }}</h1>
+  <h1>Scrape Target List</h1>
 {% endblock header %}
+
 {% block content %}
     <table class="table text-nowrap">
     <thead class="thead-dark">
-    <tr><th>Name</th><th>URL</th><th>xPath</th><th>Interval</th><th>Triger time</th><th>Last Execution</th><<th>Result Page</th></tr>
+    <tr><th>Name</th><th>URL</th><th>xPath</th><th>Interval</th><th>Triger time</th><th>Last Execution</th><th>Result Page</th></tr>
     </thead>
     <tbody>
     {% for target in scrapetarget_list %}
-    {#% for target in targets %#}
         <tr>
         <td><a href="{% url 'registration:update' target.pk %}">{{ target.name }}</a></td>
         {# <td>{{ target.name }}</td> #}
@@ -25,5 +26,5 @@
     {% endfor %}
     </tbody>
     </table>
-    <a href="{% url 'registration:create' %}">create new target</a>
+    <a class="btn btn-primary" href="{% url 'registration:create' %}" role="button">create new target</a>
 {% endblock content %}
