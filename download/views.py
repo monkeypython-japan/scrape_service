@@ -35,7 +35,7 @@ class DownloadView(View):
     def check_if_requester_owned_this(self, target_id):
         '''
             args: target_id
-            returns: if requester own this target return instance of ScrapeTarget, else return None
+            returns: if requester own this target, return instance of ScrapeTarget, else return None
         '''
         try:
             target = ScrapeTarget.objects.get(pk = target_id)
@@ -57,7 +57,7 @@ class DownloadView(View):
             list of values fetched from ScrapeResults
         '''
         results = ScrapeResult.objects.filter(target = target)
-        values = [[result.value, result.time] for result in results]
+        values = [[result.time.strftime('%Y/%d/%m %H:%M'), result.value] for result in results]
         return values
 
     def write_to_response(self, values):
