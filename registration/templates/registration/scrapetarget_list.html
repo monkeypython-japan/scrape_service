@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>Scrape Target List</h1>
+<div class="float-left">
+    <h1>Scrape Target</h1>
+</div>
+<div class="float-right">
+    <a class="btn btn-primary" href="{% url 'registration:create' %}" role="button">create new target</a>
+</div>
 {% endblock header %}
 
 {% block content %}
@@ -26,5 +31,4 @@
     {% endfor %}
     </tbody>
     </table>
-    <a class="btn btn-primary" href="{% url 'registration:create' %}" role="button">create new target</a>
 {% endblock content %}
