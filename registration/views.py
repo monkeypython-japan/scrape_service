@@ -63,7 +63,7 @@ class ScrapeTargetUpdateView(UpdateView):
     success_url = "/registration/"
 
 class ScrapeResultDeleteView(DeleteView):
-    model = ScrapeTarget
+    model = ScrapeTarget # This view never remove any ScrapeTarget.
     template_name = 'registration/results_confirm_delete.html'
     # success_url = reverse_lazy('registration:targets')
 

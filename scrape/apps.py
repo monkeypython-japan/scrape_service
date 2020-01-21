@@ -92,9 +92,11 @@ class RepeatTimer():
 
     def start_timer(self):
         ''' start to execute  '''
-        print(f'start_timer() {self.callback=}') # DEBUG
+        #print(f'start_timer() {self.callback=}') # DEBUG
         self.callback()
         t = threading.Timer(self.interval, self.start_timer)
+        print(f'{timezone.now()}') #DEBUG
+        #print(f'  {timezone.now().strftime('%Y/%d/%m %H:%M')}  ') #DEBUG
         t.start()
 
 
@@ -126,7 +128,10 @@ class TaskController():
         ''' fetch targets to be executed in current interval'''
         # django.setup() # DEBUG for test from command line
         from registration.models import ScrapeTarget, ScrapeResult
-        current = TimeByTimeSlots()
+        from django.utils.timezone import localtime
+
+        # current = TimeByTimeSlots()
+        current = TimeByTimeSlots(localtime(timezone.now()))
         time_slots = current.slot_list
         results = []
         for slot in time_slots:
@@ -136,11 +141,14 @@ class TaskController():
             print(f'{type}{number} : {hits}') # DEBUG
             results.extend(hits)
         # Check if this task was done within this interval
+        print(f'{results=}') # DEBUG
         for target in results:
             last_execution_time = target.last_execution_time
             if last_execution_time is not None and current.compare_within_slot(target.interval, TimeByTimeSlots(last_execution_time)) == 1:
                 # if last execution_time is pasted within specified interval time slot, task already executed in this interval
+                print(f'Removed target:{target}') #DEBUG
                 results.remove(target) #remove the target to pass execution
+        print(f'Tasks for this interval:{results}') # DEBUG
         return results
 
     def build_task_tree(self):
@@ -148,14 +156,15 @@ class TaskController():
         Build whole task tree with model ScrapeTarget
         '''
         task_tree = Tree()
-        # targets = self.fetch_all_task()  # TODO select only target match this interval
-        targets = self.fetch_tasks_for_current_interval()
+        # targets = self.fetch_all_task() #DEBUG
+        targets = self.fetch_tasks_for_current_interval()   # Select only targets match for this interval
         #print(f'{all_target=}') #DEBUG
         for target in targets:
             single_task_tree = Scraper.make_single_task(target.url, target.xpath, target.pk)
-            single_task_tree.describe() #DEBUG
+            #single_task_tree.describe() #DEBUG
             task_tree.graft_at_root(single_task_tree)
         task_tree.reduce()
+        task_tree.describe()  # DEBUG
         return task_tree
 
     def subit_single_url(self,url_node):
