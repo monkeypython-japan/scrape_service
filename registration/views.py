@@ -1,8 +1,10 @@
 from django.shortcuts import render,  get_list_or_404, get_object_or_404
 from .models import ScrapeResult,ScrapeTarget
-from django.views.generic import ListView, RedirectView, DetailView, CreateView, UpdateView
+from django.views.generic import ListView, RedirectView, DetailView, CreateView, UpdateView, DeleteView
 from .forms import ScrapeTargetForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse, reverse_lazy
+from django.http import HttpResponse, HttpResponseRedirect
 
 # Create your views here.
 
@@ -42,7 +44,7 @@ class ScrapeResultListView(ListView):
 class ScrapeTargetCreateView(LoginRequiredMixin, CreateView):
     model = ScrapeTarget
     form_class = ScrapeTargetForm
-    success_url = "/registration/"
+    success_url = '/registration/'
 
     def get_initial(self):
         from django.contrib.auth import get_user
@@ -59,3 +61,18 @@ class ScrapeTargetUpdateView(UpdateView):
     model = ScrapeTarget
     form_class = ScrapeTargetForm
     success_url = "/registration/"
+
+class ScrapeResultDeleteView(DeleteView):
+    model = ScrapeTarget
+    template_name = 'registration/results_confirm_delete.html'
+    # success_url = reverse_lazy('registration:targets')
+
+    def delete(self, request, *args, **kwargs):
+        print(f'ScrapeResultDeleteView.delete()') # DEBUG
+        target_id = kwargs['pk']
+        target = ScrapeTarget.objects.get(pk = target_id)
+        tobe_delete = ScrapeResult.objects.filter(target = target)
+        print(f'Will be delete {tobe_delete.count()=}') # DEBUG
+        tobe_delete.delete()
+
+        return HttpResponseRedirect(reverse_lazy('registration:targets'))

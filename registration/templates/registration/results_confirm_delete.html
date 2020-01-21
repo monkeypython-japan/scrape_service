@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>DeleteView削除確認画面</h1>
+{% endblock header %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <p>削除しますか？</p>
+        <input type="submit" value="削除する">
+    </form>
+{% endblock content %}
