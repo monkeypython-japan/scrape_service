@@ -46,11 +46,14 @@ class ScrapeTargetCreateView(LoginRequiredMixin, CreateView):
 
     def get_initial(self):
         from django.contrib.auth import get_user
+        initial = super().get_initial()
         owner = get_user(self.request)
         # print(f'get_initial() {self.request.user.id=}')
         print(f'get_initial() {owner.id=}') # DEBUG
         # return {'owner': owner, 'owner_id':self.request.user.id}
-        return {'owner': owner}
+        initial['owner'] = owner
+        # return {'owner': owner}
+        return initial
 
 class ScrapeTargetUpdateView(UpdateView):
     model = ScrapeTarget
