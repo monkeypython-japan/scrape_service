@@ -12,7 +12,12 @@
         <div class="container-fluid">
             <nav class="navbar navbar-expand-md navbar-light bg-light">
                     <div class="collapse navbar-collapse justify-content-start">
-                        User: {{ user.username }}
+                        User:
+                        {% if user.username %}
+                            {{ user.username }}
+                        {% else %}
+                            NOBODY
+                        {% endif %}
                     </div>
                   <div class="collapse navbar-collapse justify-content-end id="navbarNav4">
                     <ul class="navbar-nav">
