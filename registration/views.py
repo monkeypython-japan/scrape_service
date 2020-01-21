@@ -68,11 +68,16 @@ class ScrapeResultDeleteView(DeleteView):
     # success_url = reverse_lazy('registration:targets')
 
     def delete(self, request, *args, **kwargs):
+        '''
+        Delete Scrape results owned by scrape target instead of Scrape target
+        '''
         print(f'ScrapeResultDeleteView.delete()') # DEBUG
         target_id = kwargs['pk']
         target = ScrapeTarget.objects.get(pk = target_id)
         tobe_delete = ScrapeResult.objects.filter(target = target)
         print(f'Will be delete {tobe_delete.count()=}') # DEBUG
         tobe_delete.delete()
+        target.last_execution_time = None  # Reset last execution time
+        target.save()
 
         return HttpResponseRedirect(reverse_lazy('registration:targets'))
