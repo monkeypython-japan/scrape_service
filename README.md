@@ -76,7 +76,7 @@ Scrape した結果を、ローカルの CSV ファイルにダウンロード�
 スクレイプを実行するインターバルを、毎週、毎日、毎時から任意の時間を設定できます。
 サービス内部では 10分ごとにタスクの実行を行ってます。
 
-* 日経平均  ( 取得のインターバルは 毎時 30分に設定 )
+* 日経平均  ( 取得のインターバルは 毎時 00分に設定 )
 ![target_nikkei](./screen_shots/02_create_scrape_target_nikkei.png)
 * オンラインスーパーのきゅうりの値段 ( インターバルは毎日12時に設定 )
 ![target_yaoko](./screen_shots/03_create_scrape_target_yaoko.png)
