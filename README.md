@@ -63,3 +63,32 @@ Scrape した結果を、ローカルの CSV ファイルにダウンロード�
 * PyCharm 2019.3.1 (CE)
 
 ## スクリーンショット
+### スクレイプのターゲットの準備
+準備として対象となるページの URL とページ内要素の xpath を確認しておきます。
+
+* 例1  Yahoo Finance の日経平均
+![nikkei](./screen_shots/00_1_Nikkei_web_page.png)
+* 例2 オンランスーパーのきゅうりの値段
+![yaoko](./screen_shots/00_2_Yaoko_web_page.png)
+
+### ターゲットの登録
+ターゲットとしてURL と Xpath を登録します。
+スクレイプを実行するインターバルを、毎週、毎日、毎時から任意の時間を設定できます。
+現在の最小のインターバルは 10分になっています。
+
+* 日経平均  ( 取得のインターバルは 毎時 30分に設定 )
+![target_nikkei](./screen_shots/02_create_scrape_target_nikkei.png)
+* オンラインスーパーのきゅうりの値段 ( インターバルは毎日12時に設定 )
+![target_yaoko](./screen_shots/03_create_scrape_target_yaoko.png)
+
+### スクレイプターゲット一覧
+右端の result のリンクから結果一覧のページに移動できます。
+![target_list](./screen_shots/04_scrape_target_lsit_Nikke_Yaoko.png)
+
+### スクレイプ結果の表示
+ターゲット一覧から結果のページを表示します。この結果は、CSV ファイルとしてダウンロード可能。
+
+* 日経平均のスクレイプ結果一覧    
+![results_nikke](./screen_shots/05_scrape_result_nikkei_h3.png)
+* きゅうりの値段のスクレイプ結果一覧
+![resutls_yaoko](./screen_shots/06_scrape_result_yaoko.png)
