@@ -38,7 +38,7 @@ class TimeSlot():
         elif type == 'W' and number in range(7):
             pass
         else:
-            raise ValueError
+            raise ValueError(f'Time_Slot_Spec_Error:{type}')
         # Parameters were OK. set to attributes
         self.type = type
         self.number = number
@@ -77,6 +77,16 @@ class TimeByTimeSlots():
    def compare_within_slot(self,slot_letter,other):
         return sign(self.minutes_dict[slot_letter] - other.minutes_dict[slot_letter])
 
+   def is_in_same_time_slot(self, slot_letter, other):
+       if slot_letter == 'W':
+           return self.week_slot.number == other.week_slot.number
+       elif slot_letter =='D':
+           return self.week_slot.number == other.week_slot.number and self.day_slot.number == other.day_slot.number
+       elif slot_letter =='H':
+           return self.week_slot.number == other.week_slot.number and self.day_slot.number == other.day_slot.number and self.hour_slot.number == other.hour_slot.number
+       else:
+           raise ValueError(f'Time_Slot_Spec_Error:{slot_letter}')
+
 
 class RepeatTimer():
     ''' Execute a callable object with inetrval '''
@@ -95,7 +105,7 @@ class RepeatTimer():
         #print(f'start_timer() {self.callback=}') # DEBUG
         self.callback()
         t = threading.Timer(self.interval, self.start_timer)
-        print(f'{timezone.now()}') #DEBUG
+        #print(f'{timezone.now()}') #DEBUG
         #print(f'  {timezone.now().strftime('%Y/%d/%m %H:%M')}  ') #DEBUG
         t.start()
 
@@ -125,7 +135,10 @@ class TaskController():
         return targets
 
     def fetch_tasks_for_current_interval(self):
-        ''' fetch targets to be executed in current interval'''
+        ''' fetch targets to be executed in current interval
+            Treat all times after convert localtime in this method
+        '''
+
         # django.setup() # DEBUG for test from command line
         from registration.models import ScrapeTarget, ScrapeResult
         from django.utils.timezone import localtime
@@ -143,9 +156,11 @@ class TaskController():
         # Check if this task was done within this interval
         print(f'{results=}') # DEBUG
         for target in results:
-            last_execution_time = target.last_execution_time
-            if last_execution_time is not None and current.compare_within_slot(target.interval, TimeByTimeSlots(last_execution_time)) == 1:
+            last_execution_time = None if target.last_execution_time is None else localtime(target.last_execution_time)
+            #if last_execution_time is not None and current.compare_within_slot(target.interval, TimeByTimeSlots(last_execution_time)) == 1:
                 # if last execution_time is pasted within specified interval time slot, task already executed in this interval
+            if last_execution_time is not None and current.is_in_same_time_slot(target.interval, TimeByTimeSlots(last_execution_time)):
+                # if last execution_time is in same time slot of current, task already executed in this interval
                 print(f'Removed target:{target}') #DEBUG
                 results.remove(target) #remove the target to pass execution
         print(f'Tasks for this interval:{results}') # DEBUG
@@ -164,7 +179,9 @@ class TaskController():
             #single_task_tree.describe() #DEBUG
             task_tree.graft_at_root(single_task_tree)
         task_tree.reduce()
+        print(f'build_task_tree() START reduced task_tree -----------')  # DEBUG
         task_tree.describe()  # DEBUG
+        print(f'build_task_tree() END reduced task_tree ----------')  # DEBUG
         return task_tree
 
     def subit_single_url(self,url_node):
@@ -204,7 +221,9 @@ class TaskController():
         # django.setup() # DEBUG for test from command line
         from registration.models import ScrapeTarget, ScrapeResult
         from django.utils import timezone
+        from django.utils.timezone import localtime
         ''' Primary entry to build and execute tasks'''
+        print(f'do_the_job() time:{localtime(timezone.now())}')
         task_tree = self.build_task_tree()
         results = self.execute_task_tree(task_tree)
         for url, dict in results.items():
