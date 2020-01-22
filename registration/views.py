@@ -38,7 +38,9 @@ class ScrapeResultListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["target_id"] = self.kwargs.get('target_id',100)
+        target_id = self.kwargs.get('target_id',100)
+        context['target_id'] = target_id
+        context['target'] = ScrapeTarget.objects.get(pk=target_id)
         return context
 
 class ScrapeTargetCreateView(LoginRequiredMixin, CreateView):

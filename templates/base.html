@@ -21,23 +21,26 @@
                     </div>
                   <div class="collapse navbar-collapse justify-content-end id="navbarNav4">
                     <ul class="navbar-nav">
-                      <li class="nav-item active">
-                        <a class="nav-link" href="{% url 'registration:targets' %}">Target List <span class="sr-only">(current)</span></a>
+                      <li class="nav-item">
+                        <a class="nav-link" href="{% url 'registration:targets' %}">Target List </a>
+                          <!-- <a class="nav-link" href="{% url 'registration:targets' %}">Target List <span class="sr-only">(current)</span></a> -->
                       </li>
                     </ul>
+                    <!--
                     <ul class="navbar-nav">
                       <li class="nav-item">
                         <a class="nav-link" href="#">NavItem2</a>
                       </li>
                     </ul>
-                    <ul class="navbar-nav">
-                      <li class="nav-item">
-                        <a class="nav-link" href="#">NavItem3</a>
-                      </li>
                     </ul>
+                    -->
                     <ul class="navbar-nav">
                       <li class="nav-item">
-                          <a class="nav-link" href ="{% url 'accounts:logout' %}">Logout</a>
+                          {% if user.username %}
+                            <a class="nav-link" href ="{% url 'accounts:logout' %}">Logout</a>
+                          {% else %}
+                            <span></span>
+                          {% endif %}
                       </li>
                     </ul>
                   </div>

@@ -223,13 +223,14 @@ class TaskController():
         from django.utils import timezone
         from django.utils.timezone import localtime
         ''' Primary entry to build and execute tasks'''
-        print(f'do_the_job() time:{localtime(timezone.now())}')
+        print(f'Start do_the_job() time:{localtime(timezone.now())}') #DEBUG
         task_tree = self.build_task_tree()
         results = self.execute_task_tree(task_tree)
         for url, dict in results.items():
-            # print(f'{url=} , {dict=}') #DEBUG
+            print(f'do_the_job() {url=} , {dict=}') #DEBUG
             #find url node in task tree
             url_dict = task_tree.root.children_as_dictionary() # tear 1 is url tear
+            print(f'do_the_job() url_dict:{url_dict}') #DEBUG
             url_node = url_dict[url]
             xpath_dict = url_node.children_as_dictionary()
             for xpath, value in dict.items():
@@ -271,7 +272,7 @@ class Scraper():
              url: str target url
              xpaths: str list of xpath of target in page
          return:
-             list of result
+             dict of result
              or
              str of Error Message
          '''
@@ -291,6 +292,7 @@ class Scraper():
             html = lxml.html.fromstring(response.content)
             for xpath in xpaths:
                 tags = html.xpath(xpath)
+                print(f'scrape_with_xpaths() tags:{tags}') #DEBUG
                 results[xpath] = tags[0].text if len(tags) > 0 else '__NOVALUE__'
 
         return results

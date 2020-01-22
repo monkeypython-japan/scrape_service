@@ -59,4 +59,7 @@ Scrape した結果を、ローカルの CSV ファイルにダウンロード�
 ## 開発環境
 * Python  3.8.0
 * django 3.0
+* Bootstrap 4
 * PyCharm 2019.3.1 (CE)
+
+## スクリーンショット
