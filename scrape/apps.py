@@ -224,13 +224,9 @@ class TaskController():
         print(f'====== Start do_the_job() time:{localtime(timezone.now())}') #DEBUG
         task_tree = self.build_task_tree()
 
-        task_tree.describe('Before call execute_task_tree(task_tree)') #DEBUG
-
         #== executed in multiple threads. ==
         results = self.execute_task_tree(task_tree)
         #== return after all thread was done. ==
-
-        task_tree.describe('After call execute_task_tree(task_tree)') #DEBUG
 
         for url, dict in results.items():
             #find url node in task tree
@@ -250,8 +246,6 @@ class TaskController():
                     target.last_execution_time = timezone.now()
                     result.save()
                     target.save()
-
-
 
 
 
@@ -374,7 +368,7 @@ class Scheduler():
                 print('%r generated an exception: %s' % (key, exc))
             else:
                 results[key]=result
-
+        self.futures = {}  #REMARK reset futures for next execution.
         return results # {key:result,...}
 
     def reset(self):
