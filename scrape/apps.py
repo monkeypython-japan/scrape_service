@@ -179,12 +179,10 @@ class TaskController():
             #single_task_tree.describe() #DEBUG
             task_tree.graft_at_root(single_task_tree)
         task_tree.reduce()
-        print(f'build_task_tree() START reduced task_tree -----------')  # DEBUG
-        task_tree.describe()  # DEBUG
-        print(f'build_task_tree() END reduced task_tree ----------')  # DEBUG
+        # task_tree.describe('build_task_tree()')  # DEBUG
         return task_tree
 
-    def subit_single_url(self,url_node):
+    def submit_single_url(self,url_node):
         '''
         submit single task to Scheduler
         args:
@@ -193,7 +191,7 @@ class TaskController():
         scraper = Scraper()
         xpaths = url_node.names_of_children()
         url = url_node.name
-        self.scheduler.submit(scraper.scrape_with_xpaths, url, url, xpaths )
+        self.scheduler.submit(scraper.scrape_with_xpaths, url, url, xpaths )  #First url is key to result
 
 
     def execute_task_tree(self, task_tree):
@@ -207,7 +205,7 @@ class TaskController():
         '''
         url_nodes = task_tree.get_all_node_in_tear(1)  #Tear 1 contains ural nodes and subtree
         for url_node in url_nodes:
-            self.subit_single_url(url_node) #Submit all url tasks
+            self.submit_single_url(url_node) #Submit all url tasks
 
         results = self.scheduler.get_results()  # Wait for all task are done here
         return results    # {url:{xpath:value ...}, url2:{xpath:value...},...}
@@ -222,15 +220,22 @@ class TaskController():
         from registration.models import ScrapeTarget, ScrapeResult
         from django.utils import timezone
         from django.utils.timezone import localtime
-        ''' Primary entry to build and execute tasks'''
-        print(f'Start do_the_job() time:{localtime(timezone.now())}') #DEBUG
+
+        print(f'====== Start do_the_job() time:{localtime(timezone.now())}') #DEBUG
         task_tree = self.build_task_tree()
+
+        task_tree.describe('Before call execute_task_tree(task_tree)') #DEBUG
+
+        #== executed in multiple threads. ==
         results = self.execute_task_tree(task_tree)
+        #== return after all thread was done. ==
+
+        task_tree.describe('After call execute_task_tree(task_tree)') #DEBUG
+
         for url, dict in results.items():
-            print(f'do_the_job() {url=} , {dict=}') #DEBUG
             #find url node in task tree
             url_dict = task_tree.root.children_as_dictionary() # tear 1 is url tear
-            print(f'do_the_job() url_dict:{url_dict}') #DEBUG
+            print(f'do_the_job() url:{url}  url_dict:{url_dict}') #DEBUG
             url_node = url_dict[url]
             xpath_dict = url_node.children_as_dictionary()
             for xpath, value in dict.items():
@@ -688,19 +693,20 @@ class Tree():
         '''
         self.root.merge(ather_tree.root)
 
-    def describe(self):
+    def describe(self,comment=''):
         '''
         Print tree structre of self
         Returns:
             Print out to standard out
         '''
+        print(f'------ START OF TREE ------- {comment}')
         depth = self.get_depth()
         for tear in range(0, depth):
             nodes = self.get_all_node_in_tear(tear)
             for node in nodes:
                 print('({0}|<=|{1})'.format(node.parent.name if node.parent is not None else 'None',node.name),end='%%%')
             print(f'|END_OF_TEAR {tear}|')
-        print('------ END OF TREE -------')
+        print(f'------- END OF TREE -------- {comment}')
 
     def __str__(self):
         return f'Tree root:{self.root.name} depth:{self.get_depth()} '
