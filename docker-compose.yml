@@ -2,9 +2,7 @@ version: '3'
 
 services:
   scrape_service:
-      build: .
-      ports:
-        - "8000:8000"
-      command: uwsgi --http 0.0.0.0:8000 --module config.wsgi --py-autoreload 1 --logto /tmp/mylog.log
-      volumes:
-        - .:/code
+    image: scrape_service
+    # build: .
+    ports:
+      - "8000:80"
