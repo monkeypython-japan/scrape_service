@@ -39,6 +39,10 @@ Scraping を実際に実行するアプリケーションで、ユーザとの�
 
 Scrape した結果を、ローカルの CSV ファイルにダウンロードするためのアプリケーションです。
 
+## Contaner
+
+このプロジェクトでは静的なコンテンツは殆ど含まれていないため、uWasgi を Web Server として使っています。
+
 ## ToDo
 
 * Container での実行をサポートする。 (作業中)
@@ -63,6 +67,7 @@ Scrape した結果を、ローカルの CSV ファイルにダウンロード�
 * django 3.0
 * Bootstrap 4
 * PyCharm 2019.3.1 (CE)
+* Docker Desktop for Mac 2.0.1.5
 
 ## スクリーンショット
 ### スクレイプのターゲットの準備
