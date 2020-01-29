@@ -2,7 +2,7 @@ version: '3'
 
 services:
   scrape_service:
-    image: scrape_service
-    # build: .
+    #image: scrape_service
+    build: .
     ports:
       - "8000:80"
