@@ -5,6 +5,6 @@ services:
       build: .
       ports:
         - "8000:8000"
-      command: uwsgi --http 0.0.0.0:8001 --module config.wsgi --py-autoreload 1 --logto /tmp/mylog.log
+      command: uwsgi --http 0.0.0.0:8000 --module config.wsgi --py-autoreload 1 --logto /tmp/mylog.log
       volumes:
         - .:/code
