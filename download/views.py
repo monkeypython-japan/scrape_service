@@ -57,7 +57,7 @@ class DownloadView(View):
             list of values fetched from ScrapeResults
         '''
         results = ScrapeResult.objects.filter(target = target)
-        values = [[result.time.strftime('%Y/%d/%m %H:%M'), result.value] for result in results]
+        values = [[result.time.strftime('%Y/%m/%d %H:%M'), result.value] for result in results]
         return values
 
     def write_to_response(self, values):
