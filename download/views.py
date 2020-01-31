@@ -7,6 +7,7 @@ from django.views import View
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.timezone import localtime
 
 class DownloadView(View):
 
@@ -57,7 +58,9 @@ class DownloadView(View):
             list of values fetched from ScrapeResults
         '''
         results = ScrapeResult.objects.filter(target = target)
-        values = [[result.time.strftime('%Y/%m/%d %H:%M'), result.value] for result in results]
+        #values = [[result.time.strftime('%Y/%m/%d %H:%M'), result.value] for result in results]
+        values = [[localtime(result.time).strftime('%Y/%m/%d %H:%M'), result.value] for result in results]
+
         return values
 
     def write_to_response(self, values):
