@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f38d0a40-97fd-44e6-be09-f86bafab343c" name="Default Changelist" comment="Add codes to implement interval execution.">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+    <list default="true" id="f38d0a40-97fd-44e6-be09-f86bafab343c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -159,20 +158,6 @@
       <workItem from="1576747087762" duration="77797000" />
       <workItem from="1577758589463" duration="44462000" />
       <workItem from="1578096248395" duration="450000" />
-    </task>
-    <task id="LOCAL-00007" summary="Add accounts app summary.">
-      <created>1579137902932</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1579137902932</updated>
-    </task>
-    <task id="LOCAL-00008" summary="Add todo &quot;Improve Improve appearance&quot;">
-      <created>1579138569622</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1579138569622</updated>
     </task>
     <task id="LOCAL-00009" summary="Refactoring template structure.">
       <created>1579160830837</created>
@@ -503,7 +488,21 @@
       <option name="project" value="LOCAL" />
       <updated>1580291787965</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="change setting.py as,&#10;ALLOWED_HOSTS = [&quot;*&quot;]  # Just for testing. Not for deployment.">
+      <created>1580447774756</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1580447774757</updated>
+    </task>
+    <task id="LOCAL-00057" summary="change setting.py as,&#10;ALLOWED_HOSTS = [&quot;*&quot;]  # Just for testing. Not for deployment.">
+      <created>1580447793082</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1580447793082</updated>
+    </task>
+    <option name="localTasksCounter" value="58" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -520,7 +519,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Remove unuse code." />
     <MESSAGE value="Place download link in result page." />
     <MESSAGE value="add &lt;P&gt; tag to adjust download link position" />
     <MESSAGE value="ScrapeTargetCreateView,  change to call super in get_initial()." />
@@ -545,7 +543,8 @@
     <MESSAGE value="mod docker-compose.yml and README.md." />
     <MESSAGE value="Mod django version in requirements.txt to dismiss vulnerability alert." />
     <MESSAGE value="Erase e-mail of me." />
-    <option name="LAST_COMMIT_MESSAGE" value="Erase e-mail of me." />
+    <MESSAGE value="change setting.py as,&#10;ALLOWED_HOSTS = [&quot;*&quot;]  # Just for testing. Not for deployment." />
+    <option name="LAST_COMMIT_MESSAGE" value="change setting.py as,&#10;ALLOWED_HOSTS = [&quot;*&quot;]  # Just for testing. Not for deployment." />
   </component>
   <component name="WindowStateProjectService">
     <state x="639" y="578" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1580269964402">
@@ -568,10 +567,10 @@
       <screen x="0" y="23" width="1792" height="1097" />
     </state>
     <state x="800" y="483" key="#com.jetbrains.python.refactoring.move.PyMoveModuleMembersDialog/0.23.1792.1097@0.23.1792.1097" timestamp="1579251742795" />
-    <state x="787" y="87" width="787" height="754" key="CommitChangelistDialog2" timestamp="1580447774474">
+    <state x="787" y="87" width="787" height="754" key="CommitChangelistDialog2" timestamp="1580447792877">
       <screen x="0" y="23" width="1792" height="1097" />
     </state>
-    <state x="787" y="87" width="787" height="754" key="CommitChangelistDialog2/0.23.1792.1097@0.23.1792.1097" timestamp="1580447774474" />
+    <state x="787" y="87" width="787" height="754" key="CommitChangelistDialog2/0.23.1792.1097@0.23.1792.1097" timestamp="1580447792877" />
     <state x="342" y="166" key="FileChooserDialogImpl" timestamp="1576754649859">
       <screen x="0" y="23" width="1792" height="1097" />
     </state>
@@ -612,10 +611,10 @@
       <screen x="0" y="23" width="1792" height="1097" />
     </state>
     <state width="500" height="400" key="SwitcherDM/0.23.1792.1097@0.23.1792.1097" timestamp="1578570296811" />
-    <state x="450" y="368" key="Vcs.Push.Dialog.v2" timestamp="1580291792885">
+    <state x="450" y="368" key="Vcs.Push.Dialog.v2" timestamp="1580447811646">
       <screen x="0" y="23" width="1792" height="1097" />
     </state>
-    <state x="450" y="368" key="Vcs.Push.Dialog.v2/0.23.1792.1097@0.23.1792.1097" timestamp="1580291792885" />
+    <state x="450" y="368" key="Vcs.Push.Dialog.v2/0.23.1792.1097@0.23.1792.1097" timestamp="1580447811646" />
     <state x="187" y="190" width="1326" height="873" key="com.intellij.history.integration.ui.views.DirectoryHistoryDialog" timestamp="1578530528896">
       <screen x="0" y="23" width="1792" height="1097" />
     </state>
